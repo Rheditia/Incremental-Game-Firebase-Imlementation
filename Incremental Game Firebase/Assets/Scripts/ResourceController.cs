@@ -18,7 +18,7 @@ public class ResourceController : MonoBehaviour
         {
             // Menyimpan value yang di set ke _level pada Progress Data
             UserDataManager.Progress.ResourcesLevels[_index] = value;
-            UserDataManager.Save();
+            UserDataManager.Save(true);
         }
 
         get
@@ -37,22 +37,22 @@ public class ResourceController : MonoBehaviour
 
     public bool IsUnlocked { get; private set; }
 
-    private void Start ()
+    private void Start()
     {
-        ResourceButton.onClick.AddListener (() =>
+        ResourceButton.onClick.AddListener(() =>
         {
             if (IsUnlocked)
             {
-                UpgradeLevel ();
+                UpgradeLevel();
             }
             else
             {
-                UnlockResource ();
+                UnlockResource();
             }
         });
     }
 
-    public void SetConfig (int index, ResourceConfig config)
+    public void SetConfig(int index, ResourceConfig config)
     {
         _index = index;
         _config = config;
@@ -65,22 +65,22 @@ public class ResourceController : MonoBehaviour
         SetUnlocked(_config.UnlockCost == 0 || UserDataManager.HasResources(_index));
     }
 
-    public double GetOutput ()
+    public double GetOutput()
     {
         return _config.Output * _level;
     }
 
-    public double GetUpgradeCost ()
+    public double GetUpgradeCost()
     {
         return _config.UpgradeCost * _level;
     }
 
-    public double GetUnlockCost ()
+    public double GetUnlockCost()
     {
         return _config.UnlockCost;
     }
 
-    public void UpgradeLevel ()
+    public void UpgradeLevel()
     {
         double upgradeCost = GetUpgradeCost();
         if (UserDataManager.Progress.Gold < upgradeCost)
@@ -95,7 +95,7 @@ public class ResourceController : MonoBehaviour
         ResourceDescription.text = $"{ _config.Name } Lv. { _level }\n+{ GetOutput().ToString("0") }";
     }
 
-    public void UnlockResource ()
+    public void UnlockResource()
     {
         double unlockCost = GetUnlockCost();
         if (UserDataManager.Progress.Gold < unlockCost)
@@ -108,7 +108,7 @@ public class ResourceController : MonoBehaviour
         AchievementController.Instance.UnlockAchievement(AchievementType.UnlockResource, _config.Name);
     }
 
-    public void SetUnlocked (bool unlocked)
+    public void SetUnlocked(bool unlocked)
     {
         IsUnlocked = unlocked;
         if (unlocked)
@@ -117,7 +117,7 @@ public class ResourceController : MonoBehaviour
             if (!UserDataManager.HasResources(_index))
             {
                 UserDataManager.Progress.ResourcesLevels.Add(_level);
-                UserDataManager.Save();
+                UserDataManager.Save(true);
             }
         }
 
